@@ -2,7 +2,7 @@
 # make -Bnd | make2graph > mfgraph.dot
 
 
-mfxml2graph <- function(file, outfile = file, datadir = "/export/storage_adgandhi/", codedir = "/mnt/staff/zhli/") {
+mfxml2graph <- function(file, outfile, datadir, codedir) {
     library(stringr)
 
     # file extensions for coloring
@@ -53,9 +53,11 @@ mfxml2graph <- function(file, outfile = file, datadir = "/export/storage_adgandh
     writeLines(f_out, outfile)
 }
 
-mfxml2graph(file = "/mnt/staff/zhli/SNF_Environmental/mfgraph.dot",
-    outfile = "/mnt/staff/zhli/mfgraph_.dot",
-    datadir = "/export/storage_adgandhi/SNF_Environmental/analysis/",
-    codedir = "/mnt/staff/zhli/SNF_Environmental/")
+############################################
+# mfxml2graph(file = "/export/storage_covidvaccine/Code/mfgraph.dot",
+#     outfile = "/mnt/staff/zhli/mfgraph_.dot",
+#     datadir = "/export/storage_covidvaccine/Data/",
+#     codedir = "/export/storage_covidvaccine/Code/")
+
 
 # import to Gephi (fix layout, label scaling, etc)
