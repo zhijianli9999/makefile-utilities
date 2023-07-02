@@ -6,9 +6,9 @@ mfxml2graph <- function(file, outfile = file, datadir = "/export/storage_adgandh
     library(stringr)
 
     # file extensions for coloring
-    codeexts = c(".R", ".do", ".ipynb", ".jl")
-    dataexts = c(".dta", ".csv", ".tsv", "data/")
-    logexts = c(".log")
+    codeexts <- c("\\.R\"", "\\.do\"", "\\.ipynb\"", "\\.jl\"", "\\.py\"")
+    dataexts <- c("\\.dta\"", "\\.csv\"", "\\.tsv\"", "data/", "raw/", "\\.jls\"", "\\.shp\"", "\\.pickle\"")
+    logexts <- c("\\.log\"")
 
     f <- readLines(file)
     f_out <- ""
@@ -29,11 +29,14 @@ mfxml2graph <- function(file, outfile = file, datadir = "/export/storage_adgandh
         if (str_detect(l, "label")){ 
             #if line is a node declaration, replace color depending on extension
             if (any(str_detect(l, codeexts))){
-                colorstr <- "color=\"coral1\""
+                colorstr <- "color=\"white\""
             }
             else if (any(str_detect(l, dataexts))) {
                 l <- str_replace(l, "data/", "")
                 colorstr <- "color=\"deepskyblue\""
+                if (str_detect(l,  "raw/",)){
+                    colorstr <- "color=\"deepskyblue4\""
+                }
             }
             else if (any(str_detect(l, logexts))) {
                 colorstr <- "color=\"yellow\""
@@ -53,9 +56,19 @@ mfxml2graph <- function(file, outfile = file, datadir = "/export/storage_adgandh
     writeLines(f_out, outfile)
 }
 
-mfxml2graph(file = "/mnt/staff/zhli/SNF_Environmental/mfgraph.dot",
-    outfile = "/mnt/staff/zhli/mfgraph_.dot",
-    datadir = "/export/storage_adgandhi/SNF_Environmental/analysis/",
-    codedir = "/mnt/staff/zhli/SNF_Environmental/")
+# mfxml2graph(file = "/mnt/staff/zhli/SNF_Environmental/mfgraph.dot",
+#     outfile = "/mnt/staff/zhli/mfgraph_snfenv.dot",
+#     datadir = "/export/storage_adgandhi/SNF_Environmental/analysis/",
+#     codedir = "/mnt/staff/zhli/SNF_Environmental/")
+
+# mfxml2graph(file = "/mnt/staff/zhli/FakeReviewsEstimation/mfgraph.dot",
+#     outfile = "/mnt/staff/zhli/mfgraph_fre.dot",
+#     datadir = "/export/storage_adgandhi/FakeReviewsEstimation/",
+#     codedir = "/mnt/staff/zhli/FakeReviewsEstimation/")
+
+mfxml2graph(file = "/mnt/staff/zhli/ODMonopsony/mfgraph.dot",
+    outfile = "/mnt/staff/zhli/mfgraph_odm.dot",
+    datadir = "/export/storage_adgandhi/ODMonopsony/data/",
+    codedir = "/mnt/staff/zhli/ODMonopsony/")
 
 # import to Gephi (fix layout, label scaling, etc)
