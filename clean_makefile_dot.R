@@ -1,7 +1,18 @@
+# A simple script to clean up the output of make2graph.
+
+# TODO: This works but it pretty hardcoded and should be improved.
+
+# Before this:
+# Install make2graph (https://github.com/lindenb/makefile2graph)
 # cd {your_code_repo}
 # make -Bnd | make2graph > mfgraph.dot
 
-mfxml2graph <- function(file, outfile, datadir, codedir) {
+mfxml2graph <- function(
+    file, # path to dot file
+    outfile, # path to output dot file
+    datadir, # path to data dir
+    codedir # path to code dir
+    ) {
     library(stringr)
 
     # file extensions for coloring
@@ -56,19 +67,4 @@ mfxml2graph <- function(file, outfile, datadir, codedir) {
     writeLines(f_out, outfile)
 }
 
-# mfxml2graph(file = "/mnt/staff/zhli/SNF_Environmental/mfgraph.dot",
-#     outfile = "/mnt/staff/zhli/mfgraph_snfenv.dot",
-#     datadir = "/export/storage_adgandhi/SNF_Environmental/analysis/",
-#     codedir = "/mnt/staff/zhli/SNF_Environmental/")
-
-# mfxml2graph(file = "/mnt/staff/zhli/FakeReviewsEstimation/mfgraph.dot",
-#     outfile = "/mnt/staff/zhli/mfgraph_fre.dot",
-#     datadir = "/export/storage_adgandhi/FakeReviewsEstimation/",
-#     codedir = "/mnt/staff/zhli/FakeReviewsEstimation/")
-
-# mfxml2graph(file = "/mnt/staff/zhli/ODMonopsony/mfgraph.dot",
-#     outfile = "/mnt/staff/zhli/mfgraph_odm.dot",
-#     datadir = "/export/storage_adgandhi/ODMonopsony/data/",
-#     codedir = "/mnt/staff/zhli/ODMonopsony/")
-
-# import to Gephi (fix layout, label scaling, etc)
+# Next step: import to Gephi (fix layout, label scaling, etc)

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# This script checks if the log file contains error codes r(). 
+# If there are no error codes, the log file is moved to a folder with the same name as the log file (without the extension) in $logdir, and touches a stamp file in $stampdir/ with the same name as the log file (without the extension). 
+# If there are error codes, the script exits with an error code.
+
+stampdir="PATH_TO_STAMP_DIR"
+logdir="PATH_TO_LOG_DIR"
+
+if [ "$#" -lt 1 ]; then
+    echo "Error: log file not specified as argument"
+    exit 1
+fi
+
+logfile=$1
+
+if grep 'r([0-9]\+)' "$logfile" >& /dev/null; then
+    echo "Error: log file contains error codes r()"
+    exit 1
+else
+    touch "${stampdir}/${logfile%.log}.stamp"
+    mkdir -p "${logdir}/${logfile%.log}"
+    mv "$logfile" "${logdir}/${logfile%.log}/$(date +%Y-%m-%d-%H%M).log"
+    echo "No errors in log file, moved to ${logdir}/${logfile%.log}/$(date +%Y-%m-%d-%H%M).log"
+    exit 0
+fi
