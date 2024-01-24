@@ -5,11 +5,9 @@ This repo is a loose collection of notes and code for using makefiles, mostly wr
 In this repo:
 
 - This tutorial.
-- Example makefile.
-- Code for converting Stata code to a makefile.
-- Code to help make a makefile dependency graph.
 - Code to check Stata logs and return an informative exit status.
-<!-- TODO: fill in code paths -->
+- Code to help make a makefile dependency graph. 
+- [To be added later:] Code for converting Stata master files to a makefile.
 
 ## Why use makefiles?
 
