@@ -6,7 +6,7 @@ In this repo:
 
 - This tutorial.
 - Code to check Stata logs and return an informative exit status.
-- Code to help make a makefile dependency graph. 
+- Code to help make a makefile dependency graph.
 - [To be added later:] Code for converting Stata master files to a makefile.
 
 ## Why use makefiles?
@@ -58,14 +58,15 @@ Here's an example. This rule corresponds to `do $codedir/datawork/clean_raw.do` 
 #### What's in a rule?
 
 - You can have multiple dependencies in a rule. If any of the dependencies are more recent than the target, the code will be run. It's common to have the code file as the first dependency.
-- Having folders as dependencies is tricky: if you change a file in the folder (but don't change its name or the file structure), folder's timestamp doesn't change and the makefile won't know to run the code again.
+- Having folders as dependencies is tricky: if you change a file in the folder (but don't change its name or the file structure), the folder's timestamp doesn't change and the makefile won't know to run the code again.
 - If your recipe creates multiple files, you can list all of them as targets, separated by a space. This is equivalent to writing single-target rules (with the same dependencies and recipe) for each target listed.
-  - Advanced use: an alternative to multiple targets is _grouped targets_, which specifies explicitly that running the recipe creates all the targets. To specify a grouped target, simply list multiple targets as usual, but replace the `:` with `&:`. Assuming your code does indeed create all the targets, this is equivalent to listing all the targets separately, but it's more informative and robust to parallel execution (with the `-j` flag).
-- One convenient tool to track when a file is run is to create a _stamp_ file. We can set up the makefile such that an empty dummy `.stamp` file is `touch`ed (created or updated) when the code is run. This is useful if you don't want to specify all the outputs as targets in the makefile.
 
+##### Advanced use
+
+- An alternative to multiple targets is _grouped targets_, which specifies explicitly that running the recipe creates all the targets. To specify a grouped target, simply list multiple targets as usual, but replace the `:` with `&:`. Assuming your code does indeed create all the targets, this is equivalent to listing all the targets separately, but it's more informative, and robust to parallel execution (with the `-j` flag).
+- If, say, your code doesn't output a file, you can use the `touch` command to create an empty file (known as a _stamp_ file) with the correct name and timestamp every time the code is run. We can set up the makefile to `touch` (create or update) a corresponding `.stamp` file when the code is run, or alternatively do it at the end of your code script. This is also useful if a piece of code produces a lot of outputs and you don't want to specify all of them as targets.
 <!-- TODO:
-- wildcards
-- 
+- Wildcards/pattern rules:
  -->
 
 #### Syntax notes
@@ -74,11 +75,11 @@ Here's an example. This rule corresponds to `do $codedir/datawork/clean_raw.do` 
 - The recipe is indented with a tab, not spaces. (Advanced use: if you don't like having tabs, you can change this with the `.RECIPEPREFIX` variable.)
 - You can break up long lines with `\` at the end of the line. Make sure there are no spaces after the `\`.
 - You can define variables, e.g. as shorthand for paths and common commands. These are defined with `VARNAME = value` and used with `$(VARNAME)`.
-- It's conventional to define the `all` target at the start of the makefile to represent all the final output in the project.
-- **Phony targets** are targets that don't correspond to files. You might want to define a phony target for commands that are always run, or to refer to targets as a group. You can define them with `.PHONY: target1 target2 ...`.
+- It's conventional to define the `all` target at the start of the makefile to represent all the final output in the project. The default target is the first target in the makefile, so if you define `all` first, the makefile knows to run your entire project.
+- **Phony targets** are targets that don't correspond to files. To declare a target as phony, add `.PHONY: targetname` to the makefile. Then, you can define a rule for the phony target like any other target: `targetname: dependency1 dependency2 dependency3`. This is helpful for referring to a collection of targets that you might want to `make` as a group, or for targets that don't correspond to files.
 - **Shorthands**
   - `$@` is the target.
-  - `$^` is the dependencies.
+  - `$^` is the list of dependencies.
   - `$<` is the first dependency. Usually the code file.
 - `#` starts a comment.
 
@@ -97,7 +98,11 @@ $(datadir)/figure1.tex
 
 .PHONY: data
 
-data: \
+# I've declared `data` as a phony target. 
+# Think of `data` as a handle to refer to $(datadir)/analysis_data.dta. When you run `make data`, it runs the code to create $(datadir)/analysis_data.dta.
+
+data \
+: \
 $(datadir)/analysis_data.dta
 
 $(datadir)/cleaned_data.dta
